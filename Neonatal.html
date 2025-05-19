@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Data Takelmas Neonatal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+     <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style1.css" />
+  <style>
+    body {
+      padding: 40px 20px;
+      background-color: #f8f9fa;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .iframe-wrapper {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      background: white;
+    }
+    iframe {
+      width: 100%;
+      height: 70vh;
+      border: none;
+    }
+    .btn-group-custom .btn {
+      min-width: 160px;
+      font-weight: 500;
+    }
+    .btn.active {
+      background-color: #0d6efd;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+     <button id="toggleMode" class="btn btn-outline-dark toggle-btn">
+        <i class="bi bi-moon-fill"></i> Dark Mode
+      </button>
+  <h2  id="JudulMaternal" class="text-center mb-4">Takelmas Kelurahan Kelutan</h2>
+  <div class="d-flex justify-content-center gap-2 flex-wrap mb-3 btn-group-custom">
+    <button class="btn btn-outline-success btn-sm shadow" onclick="downloadPDF()">📥 Unduh PDF Sheet Aktif</button>
+  </div>
+  <div class="iframe-wrapper">
+    <iframe id="sheetFrame" src=""></iframe>
+  </div>
+</div>
+
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    // --- Ambil ID dari URL ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get("id");
+
+    // --- Dark Mode Toggle ---
+    const toggleBtn = document.getElementById("toggleMode");
+    const body = document.body;
+
+    if (localStorage.getItem("theme") === "dark") {
+      body.classList.replace("light-mode", "dark-mode");
+      toggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i> Light Mode';
+    }
+
+    toggleBtn.addEventListener("click", () => {
+      if (body.classList.contains("light-mode")) {
+        body.classList.replace("light-mode", "dark-mode");
+        localStorage.setItem("theme", "dark");
+        toggleBtn.innerHTML = '<i class="bi bi-sun-fill"></i> Light Mode';
+      } else {
+        body.classList.replace("dark-mode", "light-mode");
+        localStorage.setItem("theme", "light");
+        toggleBtn.innerHTML = '<i class="bi bi-moon-fill"></i> Dark Mode';
+      }
+    });
+
+    // --- Tambah Tombol Kembali ke Dashboard ---
+    const backBtn = document.createElement("a");
+    backBtn.className = "btn btn-outline-warning ms-2";
+    backBtn.href = `takelmas.html?id=${id}`;
+    backBtn.innerHTML = `<i class="bi bi-arrow-left-circle"></i> Back to Data Takelmas`;
+    toggleBtn.after(backBtn);
+
+    // --- Ubah Judul Berdasarkan ID ---
+    const wilayahMap = {
+      1: "Takelmas Neonatal Desa Karangsoko",
+      2: "Takelmas Neonatal Desa Sambirejo",
+      3: "Takelmas Neonatal Kelurahan Kelutan",
+      4: "Takelmas Neonatal Kelurahan Tamanan",
+      5: "Takelmas Neonatal Kelurahan Ngantru",
+      6: "Takelmas Neonatal Kelurahan Sumbergedong",
+      7: "Takelmas Neonatal Puskesmas Trenggalek Induk",
+    };
+
+    const judulEl = document.getElementById("JudulMaternal");
+    if (wilayahMap[id]) {
+      judulEl.textContent = wilayahMap[id];
+    }
+
+    // --- Spreadsheet ID dan Iframe URL Berdasarkan ID ---
+    // let spreadsheetId = "1bsRURDnYIE9jKEEf293ah_J9MfdC_E4ZNs0F-Gun9Nc";
+    // let baseIframeURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ3ottXRJ_ORHOxIcpXhn1IGT--0Zw4Xkzmkja_nTD-3zVwWjfilwJMvonfqWsAVf6jCcHH4uuUeHxV/pubhtml?widget=true&headers=false";
+    if (id === "1") {
+      spreadsheetId = "1AMXPZZtUQL6qDuAVyAO_mU6eTYw62fR28nD58e7F7Bk";
+      baseIframeURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS9DoQL57bwrpRavOszSEaToB6WemeVKLLyPzqNIIqtH5P6FVQItPm74zh5K4bKhTZlfg7W2haGgNm4/pubhtml?widget=true&headers=false";
+      gidid="923067154"
+    }
+    if (id === "2") {
+      spreadsheetId = "1jYWiTQrq9bo8fkLuqIPomR_wNk2vCCr7cFqbUmHz3w4";
+      baseIframeURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSq116NE_MvyHqEVo7pXso01NVGry9ULLdgCUcdPhvvyF62KMlm1IUM7MM9UzcDd-BFWkJS6o6BzVqZ/pubhtml?widget=true&headers=false";
+      gidid="752444697"
+    }
+    if (id === "3") {
+      spreadsheetId = "1TbMzSJPD5NDsCfrEWs_f3_IQqzX-gDT7B7kqr-dY2WM";
+      baseIframeURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRFdntVTmULsqgcEPLT71omJn5SGjBWmIesWRqJyp1fvURYebG_ezlDkNy26WgnSO0JNUQT0uC2D4W_/pubhtml?widget=true&headers=false";
+      gidid="931960194"
+    }
+    if (id === "4") {
+      spreadsheetId = "1iIP2sJ-JbT01JrhcQbA4Fk_YYoCqxoV2LwsZ1ThmnKU";
+      baseIframeURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQxWj6Zq9aO2es0Rwfaagr5B6pGfhyWMeoUvJ-m-s0J5krbXvA-aMz3Sh9-G77A-dtk45HKXQFcwrO5/pubhtml?widget=true&headers=false";
+      gidid="1430334815"
+    }
+    if (id === "5") {
+      spreadsheetId = "16QrKX56iL901Vm4FchLbZbV5yNihyd4wKHzcA9fvb_g";
+      baseIframeURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQud2SxxnB_QejTHCSbFOyw8EHuvLfypxfhxa6NaOzeTjwX6EcoEXYsdfPlWhswZJhc00WTBIb23-mG/pubhtml?widget=true&headers=false";
+      gidid="148205435"
+    }
+    if (id === "6") {
+      spreadsheetId = "183BBexu_zseyID6zVnzuAExcsLdQIChk5D9Cimr9pWc";
+      baseIframeURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTC3IsI2gx6NGczshyJQWvyh3SjfstutahepuImOleaY23bK1kV8D6iLDK_yoOlA8vtnaJOyIv7nkr6/pubhtml?widget=true&headers=false";
+      gidid="1850320425"
+    }
+
+    let currentGid = gidid; // Default GID
+
+    function loadSheet(gid) {
+      const iframeURL = `${baseIframeURL}&gid=${gid}`;
+      document.getElementById("sheetFrame").src = iframeURL;
+    }
+
+    window.switchSheet = function(gid, button) {
+      currentGid = gid;
+      loadSheet(gid);
+      document.querySelectorAll(".btn-group-custom .btn").forEach(btn => btn.classList.remove("active"));
+      if (button) button.classList.add("active");
+    };
+
+    window.downloadPDF = function () {
+      const exportURL = `https://docs.google.com/spreadsheets/d/${spreadsheetId}/export?format=pdf&portrait=false&size=A4&sheetnames=false&printtitle=false&pagenumbers=false&gridlines=false&horizontal_alignment=CENTER&gid=${currentGid}`;
+      window.open(exportURL, "_blank");
+    };
+
+    // Inisialisasi awal
+    switchSheet(currentGid, document.getElementById("btn-sheet1"));
+  });
+</script>
+
+
+</body>
+</html>
